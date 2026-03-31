@@ -1,0 +1,55 @@
+name: "jira"
+version: "0.1.0"
+description: "JIRA integration for querying tickets, descriptions, and issue details"
+author: ""
+
+# Domains this plugin's sandbox may reach at runtime (enforced by craft daemon).
+# List only the hosts your plugin actually calls.
+allowed_domains: ["*.atlassian.net"]
+  # - "*.atlassian.net"
+
+# ── Setup flow ────────────────────────────────────────────────────────────────
+# craft walks these steps interactively when a user runs `craft mcp add`.
+# Remove the label placeholder and add real credential steps below.
+setup:
+  - kind: label
+    title: "Prerequisites"
+    text: "You need a JIRA instance (Cloud or Server) and an API token. Create one at https://id.atlassian.com/manage-profile/security/api-tokens"
+
+  # ── Plain-text input (non-secret values) ─────────────────────────────────
+  - id: base_url
+    env: JIRA_BASE_URL
+    kind: label
+    title: "JIRA Base URL"
+    example: "https://mcfoundry.atlassian.net/"
+
+  # ── Plain-text input for username/email ─────────────────────────────────
+  - id: username
+    env: JIRA_USERNAME
+    kind: input
+    title: "Email address"
+    example: "user@example.com"
+
+  # ── Guided secret (API token) ──────────────────────────────────────────
+  - id: api_token
+    env: JIRA_API_TOKEN
+    kind: secret
+    title: "API Token"
+    steps:
+      - action: open
+        url: "https://id.atlassian.com/manage-profile/security/api-tokens"
+        label: "Opening token settings in your browser…"
+      - action: info
+        text: "Click 'Create API token' and copy it"
+      - action: prompt
+        hint: "looks like: ATATT3xFfGF0..."
+
+# ── Agent registration ────────────────────────────────────────────────────────
+# craft writes `craft mcp run jira` into each agent's config file.
+# Secrets are NEVER written to these files — injected at runtime via keychain.
+# Supported: vscode, github_copilot, claude_code, claude_desktop, cursor,
+#            gemini, codex, continue, zed, windsurf, antigravity
+register:
+  - vscode
+  - claude_code
+  - cursor

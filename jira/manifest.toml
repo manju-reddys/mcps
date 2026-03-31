@@ -1,0 +1,6 @@
+name            = "jira"
+kind            = "wasm"
+source          = "jira.wasm"
+source_hash     = ""
+env_vars        = []
+allowed_domains = []

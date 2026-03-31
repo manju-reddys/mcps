@@ -1,0 +1,9 @@
+package mcp:plugin;
+
+interface run {
+  run: func();
+}
+
+world plugin {
+  export run;
+}
