@@ -1,0 +1,13 @@
+{
+  "servers": {
+    "jira": {
+      "args": [
+        "mcp",
+        "run",
+        "jira"
+      ],
+      "command": "craft",
+      "type": "stdio"
+    }
+  }
+}

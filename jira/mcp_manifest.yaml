@@ -1,55 +1,53 @@
 name: "jira"
-version: "0.1.0"
-description: "JIRA integration for querying tickets, descriptions, and issue details"
-author: ""
+version: "1.2.0"
+description: "Jira integration — browse issues, post comments, and transition tickets"
+author: "Acme Corp"
+entry: "server.py"
+transport: stdio
 
-# Domains this plugin's sandbox may reach at runtime (enforced by craft daemon).
-# List only the hosts your plugin actually calls.
-allowed_domains: ["*.atlassian.net"]
-  # - "*.atlassian.net"
+allowed_domains:
+  - "*.atlassian.net"
+  - "api.atlassian.com"
 
-# ── Setup flow ────────────────────────────────────────────────────────────────
-# craft walks these steps interactively when a user runs `craft mcp add`.
-# Remove the label placeholder and add real credential steps below.
 setup:
-  - kind: label
-    title: "Prerequisites"
-    text: "You need a JIRA instance (Cloud or Server) and an API token. Create one at https://id.atlassian.com/manage-profile/security/api-tokens"
+  - kind: info
+    id: intro
+    title: "Welcome to JIRA plugin setup!"
+    hint: "You need a Jira account with API access enabled."
 
-  # ── Plain-text input (non-secret values) ─────────────────────────────────
-  - id: base_url
+  - kind: input
+    id: base_url
+    title: "Jira instance URL"
     env: JIRA_BASE_URL
-    kind: label
-    title: "JIRA Base URL"
-    example: "https://mcfoundry.atlassian.net/"
+    value: "https://mcfoundry.atlassian.net"
+    type: url
+    required: true
+    hint: "Must be the root URL, no trailing slash"
 
-  # ── Plain-text input for username/email ─────────────────────────────────
-  - id: username
-    env: JIRA_USERNAME
-    kind: input
-    title: "Email address"
-    example: "user@example.com"
+  - kind: input
+    id: user_email
+    title: "Your Jira account email"
+    env: JIRA_USER_EMAIL
+    type: email
+    required: true
+    hint: "<<firstname.lastname>>@mastercard.com"
 
-  # ── Guided secret (API token) ──────────────────────────────────────────
-  - id: api_token
-    env: JIRA_API_TOKEN
-    kind: secret
+  - kind: input
+    id: api_token
     title: "API Token"
+    env: JIRA_API_TOKEN
+    hint: "starts with 'ATLAS' and is 52 characters long"
+    type: secret
+    required: true
     steps:
-      - action: open
+      - kind: open
+        id: open_token_page
+        title: "Opening token settings page…"
         url: "https://id.atlassian.com/manage-profile/security/api-tokens"
-        label: "Opening token settings in your browser…"
-      - action: info
-        text: "Click 'Create API token' and copy it"
-      - action: prompt
-        hint: "looks like: ATATT3xFfGF0..."
+      - kind: info
+        id: token_instructions
+        title: "Click \"Create token\", select Read scope, copy the value."
 
-# ── Agent registration ────────────────────────────────────────────────────────
-# craft writes `craft mcp run jira` into each agent's config file.
-# Secrets are NEVER written to these files — injected at runtime via keychain.
-# Supported: vscode, github_copilot, claude_code, claude_desktop, cursor,
-#            gemini, codex, continue, zed, windsurf, antigravity
 register:
   - vscode
-  - claude_code
-  - cursor
+  - github
