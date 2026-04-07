@@ -1,19 +1,59 @@
 name: "jira"
 version: "1.2.0"
 description: "Jira integration — browse issues, post comments, and transition tickets"
-author: "Acme Corp"
+author: "Mastercard"
 entry: "dist/index.js"
 transport: stdio
 
 allowed_domains:
   - "*.atlassian.net"
-  - "api.atlassian.com"
+  - "api.atlassian.com"  
 
 setup:
   - kind: info
     id: intro
     title: "Welcome to JIRA plugin setup!"
     hint: "You need a Jira account with API access enabled."
+
+  - kind: select
+    id: machine_type
+    title: "Select your machine type"
+    hint: "Choose \"corp\" for Mastercard corporate network or \"labs\" for Forge."
+    env: MACHINE_TYPE
+    options:
+      - label: "Corp (Mastercard corporate network)"
+        value: corp
+        steps:
+          - id: ensure_corp_network
+            kind: ensure
+            title: "Verify access to Mastercard artifacts registry"
+            verify:
+              - url: https://artifacts.mastercard.int
+                timeout: 10
+            remediate:
+              - id: open_vpn_portal
+                kind: open
+                title: "Open VPN portal"
+                url: https://10.154.18.132/connect/PortalMain
+              - id: vpn_login_instructions
+                kind: info
+                title: "VPN login required"
+                hint: "Log in to the VPN portal that just opened, then return here and retry."
+
+      - label: "Labs (Forge)"
+        value: labs
+        steps:
+          - id: ensure_labs_network
+            kind: ensure
+            title: "Verify access to Forge artifacts registry"
+            verify:
+              - url: https://artifacts.forge.mastercard.com
+                timeout: 10
+            remediate:
+              - id: azure_vpn_instructions
+                kind: info
+                title: "Azure VPN login required"
+                hint: "Open the Azure VPN app on your device and connect. Once connected, return here and press Enter to verify again."
 
   - kind: input
     id: base_url
