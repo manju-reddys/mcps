@@ -1,0 +1,53 @@
+name: "jira"
+version: "1.2.0"
+description: "Jira integration — browse issues, post comments, and transition tickets"
+author: "Acme Corp"
+entry: "dist/index.js"
+transport: stdio
+
+allowed_domains:
+  - "*.atlassian.net"
+  - "api.atlassian.com"
+
+setup:
+  - kind: info
+    id: intro
+    title: "Welcome to JIRA plugin setup!"
+    hint: "You need a Jira account with API access enabled."
+
+  - kind: input
+    id: base_url
+    title: "Jira instance URL"
+    env: JIRA_BASE_URL
+    value: ""
+    type: url
+    required: true
+    hint: "Must be the root URL, no trailing slash. https://<your-domain>.atlassian.net"
+
+  - kind: input
+    id: user_email
+    title: "Your Jira account email"
+    env: JIRA_USER_ID
+    type: email
+    required: true
+    hint: "<<firstname.lastname>>@mastercard.com"
+
+  - kind: input
+    id: api_token
+    title: "API Token"
+    env: JIRA_API_TOKEN
+    hint: "starts with 'ATLAS' and is 52 characters long"
+    type: secret
+    required: true
+    steps:
+      - kind: open
+        id: open_token_page
+        title: "Opening token settings page…"
+        url: "https://id.atlassian.com/manage-profile/security/api-tokens"
+      - kind: info
+        id: token_instructions
+        title: "Click \"Create token\", select Read scope, copy the value."
+
+register:
+  - vscode
+  - github
