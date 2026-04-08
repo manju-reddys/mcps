@@ -27,7 +27,7 @@ setup:
   - kind: input
     id: user_email
     title: "Your Jira account email"
-    env: JIRA_USER_EMAIL
+    env: JIRA_USER_ID
     type: email
     required: true
     hint: "<<firstname.lastname>>@mastercard.com"
